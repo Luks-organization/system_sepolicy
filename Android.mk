@@ -2,14 +2,13 @@ LOCAL_PATH:= $(call my-dir)
 
 include $(CLEAR_VARS)
 
-ifdef BOARD_SEPOLICY_UNION
-$(warning BOARD_SEPOLICY_UNION is no longer required - all files found in BOARD_SEPOLICY_DIRS are implicitly unioned; please remove from your BoardConfig.mk or other .mk file.)
+ifeq ($(SELINUX_IGNORE_NEVERALLOWS),true)
+ifeq ($(TARGET_BUILD_VARIANT),user)
+$(warning SELINUX_IGNORE_NEVERALLOWS := true cannot be used in user builds)
 endif
-
-ifdef BOARD_SEPOLICY_M4DEFS
-LOCAL_ADDITIONAL_M4DEFS := $(addprefix -D, $(BOARD_SEPOLICY_M4DEFS))
-else
-LOCAL_ADDITIONAL_M4DEFS :=
+$(warning Be careful when using the SELINUX_IGNORE_NEVERALLOWS flag. \
+          It does not work in user builds and using it will \
+          not stop you from failing CTS.)
 endif
 
 # sepolicy is now divided into multiple portions:
